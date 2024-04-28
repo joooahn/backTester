@@ -33,7 +33,7 @@ merged_candle = candle.set_ema(merged_candle)
 #     print("전략 수익률 : " + str(result[1]))
 #     print("보유 수익률 : " + str(result[2]))
 
-result = trading.set_ror(merged_candle, 20, 0.0004, 2, 0.5)
+result = trading.set_ror(merged_candle, 10, 0.0004, 2, 0.1)
 df = result[0]
 print("k값 : " + str(0.5))
 print("전략 적용 시 수익률 : " + str(result[1]))

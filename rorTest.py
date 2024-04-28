@@ -1,3 +1,3 @@
 import trading
 
-print(trading.calculate_ror(2, 1, 0.0004, 2))
+print(trading.calculate_ror(0.9, 1, 0.0004, 2))

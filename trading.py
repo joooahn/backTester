@@ -61,7 +61,22 @@ def set_ror(candle_info, leverage, fee, loss_cut, k):
 
     # 누적 수익률
     candle_info['hpr'] = candle_info['ror'].cumprod()
+
+    # 필요없는 column 삭제
+    candle_info.drop('time_x', axis=1, inplace=True)
+    candle_info.drop('open_x', axis=1, inplace=True)
+    candle_info.drop('high_x', axis=1, inplace=True)
+    candle_info.drop('low_x', axis=1, inplace=True)
+    candle_info.drop('close_x', axis=1, inplace=True)
+    candle_info.drop('volume_x', axis=1, inplace=True)
+    candle_info.drop('volume_y', axis=1, inplace=True)
+    candle_info.drop('ema20', axis=1, inplace=True)
+    candle_info.drop('ema50', axis=1, inplace=True)
+    candle_info.drop('ema100', axis=1, inplace=True)
+    candle_info.drop('range', axis=1, inplace=True)
+    candle_info.drop('target', axis=1, inplace=True)
+
     candle_info.to_excel("volatility_breakout.xlsx")
     strategy_ror = candle_info['hpr'].iloc[-1]
-    hold_ror = candle_info['open_x'].iloc[-1] / candle_info['open_x'].iloc[0]
+    hold_ror = candle_info['open_y'].iloc[-1] / candle_info['open_y'].iloc[0]
     return candle_info, strategy_ror, hold_ror
