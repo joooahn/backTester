@@ -81,7 +81,6 @@ def show_chart(df):
 candle_30min = pybithumb.get_candlestick("BTC", payment_currency="KRW", chart_intervals="30m")
 candle_5min = pybithumb.get_candlestick("BTC", chart_intervals="5m")
 merged_candle = candle.merge_candle(candle_30min, candle_5min)
-merged_candle = candle.set_ema(merged_candle)
 
 # for i in np.arange(0.1, 1.0, 0.1):
 #     result = set_ror(merged_candle, 20, 0.0004, 2, i)
