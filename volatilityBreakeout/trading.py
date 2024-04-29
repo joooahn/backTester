@@ -9,12 +9,7 @@ def calculate_ror(sell_price, buy_price, fee, leverage):
     return 1 - loss_rate
 
 
-def set_ror(candle_info, leverage, fee, loss_cut, k):
-    # 직전 30분봉 기준 range, target 계산
-    # 즉, 이번 5분봉 마감이 직전 30분봉을 k% 장악하는 양봉일 때 매수, 이번 30분봉 마감 시 매도
-    candle_info['range'] = (candle_info['high_x'] - candle_info['low_x']) * k
-    candle_info['target'] = candle_info['open_x'] + candle_info['range'].shift(6)
-
+def set_ror(candle_info, leverage, fee, loss_cut):
     # 거래 진행 정보
     candle_info['buy'] = 0
     candle_info['sell'] = 0
@@ -29,13 +24,14 @@ def set_ror(candle_info, leverage, fee, loss_cut, k):
     for i in range(len(candle_info)):
         current_candle = candle_info.iloc[i]
         current_price = current_candle['close_y']
+        current_range = current_candle['close_y'] - current_candle['open_y']
         target_price = current_candle['target']
         bull = is_bull(current_candle)
         # 30분봉 시작
         if i % 6 == 0:
             bought = False
-        # 5분봉 종가 마감이 target 보다 높으면 매수
-        if not bought and bull and current_price > target_price:
+        # 이번 5분봉 1개로 직전 30분봉을 k% 이상 장악하면 매수
+        if not bought and bull and current_price > target_price and current_range > current_candle['range']:
             # 30분봉 마감 시 매수하지 않음
             if i % 6 == 5:
                 continue
@@ -63,13 +59,13 @@ def set_ror(candle_info, leverage, fee, loss_cut, k):
     candle_info['hpr'] = candle_info['ror'].cumprod()
 
     # 필요없는 column 삭제
-    candle_info.drop('time_x', axis=1, inplace=True)
-    candle_info.drop('open_x', axis=1, inplace=True)
-    candle_info.drop('high_x', axis=1, inplace=True)
-    candle_info.drop('low_x', axis=1, inplace=True)
-    candle_info.drop('close_x', axis=1, inplace=True)
-    candle_info.drop('volume_x', axis=1, inplace=True)
-    candle_info.drop('volume_y', axis=1, inplace=True)
+    # candle_info.drop('time_x', axis=1, inplace=True)
+    # candle_info.drop('open_x', axis=1, inplace=True)
+    # candle_info.drop('high_x', axis=1, inplace=True)
+    # candle_info.drop('low_x', axis=1, inplace=True)
+    # candle_info.drop('close_x', axis=1, inplace=True)
+    # candle_info.drop('volume_x', axis=1, inplace=True)
+    # candle_info.drop('volume_y', axis=1, inplace=True)
     candle_info.drop('ema20', axis=1, inplace=True)
     candle_info.drop('ema50', axis=1, inplace=True)
     candle_info.drop('ema100', axis=1, inplace=True)
